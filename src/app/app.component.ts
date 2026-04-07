@@ -10,7 +10,7 @@ export class AppComponent {
   tradition: Tradition = 'all';
   domain: Domain = 'any';
   suffixFilter: SuffixFilter = 'any';
-  count = 9;
+  count = 10;
   results: GeneratedAngel[] = [];
 
   traditions: Tradition[] = ['hebrew','christian','islamic','enochian','all'];

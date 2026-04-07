@@ -213,7 +213,7 @@ export class AngelNameGeneratorService {
       tradition    = 'all',
       domain       = 'any',
       suffixFilter = 'any',
-      count        = 9,
+      count        = 10,
     } = params;
 
     const safeCount = Math.min(48, Math.max(1, count));
