@@ -1,0 +1,41 @@
+<div style="font-family: system-ui, sans-serif; padding: 24px; max-width: 720px; margin: 0 auto;">
+  <h1>Angel Name Generator</h1>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+    <label>
+      Tradition
+      <select [(ngModel)]="tradition" name="tradition">
+        <option *ngFor="let t of traditions" [value]="t">{{t}}</option>
+      </select>
+    </label>
+
+    <label>
+      Domain
+      <select [(ngModel)]="domain" name="domain">
+        <option *ngFor="let d of domains" [value]="d">{{d}}</option>
+      </select>
+    </label>
+
+    <label>
+      Suffix
+      <select [(ngModel)]="suffixFilter" name="suffix">
+        <option *ngFor="let s of suffixes" [value]="s">{{s}}</option>
+      </select>
+    </label>
+
+    <label>
+      Count
+      <input type="number" [(ngModel)]="count" min="1" max="48" />
+    </label>
+  </div>
+
+  <button (click)="generate()">Generate</button>
+
+  <hr />
+
+  <ul>
+    <li *ngFor="let r of results">
+      <strong>{{r.name}}</strong> — <em>{{r.meaning}}</em> (<span>{{r.domain}}</span>) <small>{{r.suffix}} {{r.suffixTradition}}</small>
+    </li>
+  </ul>
+</div>
