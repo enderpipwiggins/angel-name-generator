@@ -1,5 +1,3 @@
-import { Injectable } from '@angular/core';
-
 export type Tradition = 'hebrew' | 'christian' | 'islamic' | 'enochian' | 'all';
 export type Domain =
   | 'celestial' | 'nature' | 'divine' | 'concepts'
@@ -15,6 +13,7 @@ export interface AngelSuffix {
   suffix: string;
   label: string;
   tradition: string;
+  meaning: string;
 }
 
 export interface GeneratedAngel {
@@ -23,6 +22,7 @@ export interface GeneratedAngel {
   meaning: string;
   domain: Domain;
   suffix: string;
+  suffixMeaning: string;
   suffixTradition: string;
 }
 
@@ -32,6 +32,8 @@ export interface GeneratorParams {
   suffixFilter?: SuffixFilter;
   count?: number;
 }
+
+// ── Root pools by domain ──────────────────────────────────────────────────────
 
 const ROOTS: Record<Exclude<Domain, 'any'>, AngelRoot[]> = {
   celestial: [
@@ -129,41 +131,45 @@ const ROOTS: Record<Exclude<Domain, 'any'>, AngelRoot[]> = {
   ],
 };
 
+// ── Suffix pools by tradition ─────────────────────────────────────────────────
+
 const SUFFIXES: Record<Tradition, AngelSuffix[]> = {
   hebrew: [
-    { suffix: 'el',  label: '-el',  tradition: 'Hebrew' },
-    { suffix: 'iel', label: '-iel', tradition: 'Hebrew' },
-    { suffix: 'on',  label: '-on',  tradition: 'Hebrew honorific' },
+    { suffix: 'el',  label: '-el',  tradition: 'Hebrew',           meaning: 'God' },
+    { suffix: 'iel', label: '-iel', tradition: 'Hebrew',           meaning: 'of God' },
+    { suffix: 'on',  label: '-on',  tradition: 'Hebrew honorific', meaning: 'great one / exalted' },
   ],
   christian: [
-    { suffix: 'el',  label: '-el',  tradition: 'Hebrew' },
-    { suffix: 'iel', label: '-iel', tradition: 'Hebrew' },
-    { suffix: 'on',  label: '-on',  tradition: 'Honorific' },
-    { suffix: 'us',  label: '-us',  tradition: 'Latin' },
+    { suffix: 'el',  label: '-el',  tradition: 'Hebrew',    meaning: 'God' },
+    { suffix: 'iel', label: '-iel', tradition: 'Hebrew',    meaning: 'of God' },
+    { suffix: 'on',  label: '-on',  tradition: 'Honorific', meaning: 'great one / exalted' },
+    { suffix: 'us',  label: '-us',  tradition: 'Latin',     meaning: 'divine being (Latinized)' },
   ],
   islamic: [
-    { suffix: 'il',  label: '-il',  tradition: 'Arabic' },
-    { suffix: 'ail', label: '-ail', tradition: 'Arabic' },
-    { suffix: '',    label: 'none', tradition: 'Arabic bare' },
+    { suffix: 'il',  label: '-il',  tradition: 'Arabic',      meaning: 'God (Arabic form of El)' },
+    { suffix: 'ail', label: '-ail', tradition: 'Arabic',      meaning: 'of God (Arabic form of El)' },
+    { suffix: '',    label: 'none', tradition: 'Arabic bare', meaning: 'root meaning stands alone' },
   ],
   enochian: [
-    { suffix: 'el',   label: '-el',   tradition: 'Hebrew' },
-    { suffix: 'iel',  label: '-iel',  tradition: 'Hebrew' },
-    { suffix: 'eel',  label: '-eel',  tradition: 'Enochian' },
-    { suffix: 'qiel', label: '-qiel', tradition: 'Enochian' },
+    { suffix: 'el',   label: '-el',   tradition: 'Hebrew',   meaning: 'God' },
+    { suffix: 'iel',  label: '-iel',  tradition: 'Hebrew',   meaning: 'of God' },
+    { suffix: 'eel',  label: '-eel',  tradition: 'Enochian', meaning: 'emanation of the divine light' },
+    { suffix: 'qiel', label: '-qiel', tradition: 'Enochian', meaning: 'voice / breath of God' },
   ],
   all: [
-    { suffix: 'el',   label: '-el',   tradition: 'Hebrew' },
-    { suffix: 'iel',  label: '-iel',  tradition: 'Hebrew' },
-    { suffix: 'on',   label: '-on',   tradition: 'Honorific' },
-    { suffix: 'il',   label: '-il',   tradition: 'Arabic' },
-    { suffix: 'ail',  label: '-ail',  tradition: 'Arabic' },
-    { suffix: 'eel',  label: '-eel',  tradition: 'Enochian' },
-    { suffix: '',     label: 'none',  tradition: 'Bare form' },
+    { suffix: 'el',   label: '-el',   tradition: 'Hebrew',      meaning: 'God' },
+    { suffix: 'iel',  label: '-iel',  tradition: 'Hebrew',      meaning: 'of God' },
+    { suffix: 'on',   label: '-on',   tradition: 'Honorific',   meaning: 'great one / exalted' },
+    { suffix: 'il',   label: '-il',   tradition: 'Arabic',      meaning: 'God (Arabic form of El)' },
+    { suffix: 'ail',  label: '-ail',  tradition: 'Arabic',      meaning: 'of God (Arabic form of El)' },
+    { suffix: 'eel',  label: '-eel',  tradition: 'Enochian',    meaning: 'emanation of the divine light' },
+    { suffix: 'us',   label: '-us',   tradition: 'Latin',       meaning: 'divine being (Latinized)' },
+    { suffix: '',     label: 'none',  tradition: 'Bare form',   meaning: 'root meaning stands alone' },
   ],
 };
 
-@Injectable({ providedIn: 'root' })
+// ── Service ───────────────────────────────────────────────────────────────────
+
 export class AngelNameGeneratorService {
 
   private getRootPool(domain: Domain): (AngelRoot & { domain: Domain })[] {
@@ -182,6 +188,7 @@ export class AngelNameGeneratorService {
     const target = filter === 'none' ? '' : filter;
     const filtered = pool.filter(s => s.suffix === target);
 
+    // Fall back to full pool if filter yields nothing for this tradition
     return filtered.length > 0 ? filtered : SUFFIXES.all.filter(s => s.suffix === target);
   }
 
@@ -237,6 +244,7 @@ export class AngelNameGeneratorService {
         meaning:         rootObj.meaning,
         domain:          rootObj.domain,
         suffix:          suffixObj.label,
+        suffixMeaning:   suffixObj.meaning,
         suffixTradition: suffixObj.tradition,
       });
     }
@@ -244,3 +252,16 @@ export class AngelNameGeneratorService {
     return results;
   }
 }
+
+// ── Usage example ─────────────────────────────────────────────────────────────
+//
+// const svc = new AngelNameGeneratorService();
+//
+// // Generate 5 Enochian war angels
+// const warAngels = svc.generate({ tradition: 'enochian', domain: 'war', count: 5 });
+//
+// // Generate 10 names from any tradition with -el suffix
+// const elAngels = svc.generate({ suffixFilter: 'el', count: 10 });
+//
+// // Generate 3 Islamic healing angels
+// const healers = svc.generate({ tradition: 'islamic', domain: 'healing', count: 3 });
