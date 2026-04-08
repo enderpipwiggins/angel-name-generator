@@ -11,28 +11,36 @@
 
         <div class="col-sm-6">
           <label class="form-label fw-semibold">Tradition</label>
-          <select class="form-select" [(ngModel)]="tradition" name="tradition">
+          <select class="form-select"
+            [value]="tradition$ | async"
+            (change)="setTradition($any($event.target).value)">
             <option *ngFor="let t of traditions" [value]="t">{{ t | titlecase }}</option>
           </select>
         </div>
 
         <div class="col-sm-6">
           <label class="form-label fw-semibold">Domain</label>
-          <select class="form-select" [(ngModel)]="domain" name="domain">
+          <select class="form-select"
+            [value]="domain$ | async"
+            (change)="setDomain($any($event.target).value)">
             <option *ngFor="let d of domains" [value]="d">{{ d | titlecase }}</option>
           </select>
         </div>
 
         <div class="col-sm-6">
           <label class="form-label fw-semibold">Suffix</label>
-          <select class="form-select" [(ngModel)]="suffixFilter" name="suffix">
+          <select class="form-select"
+            [value]="suffixFilter$ | async"
+            (change)="setSuffixFilter($any($event.target).value)">
             <option *ngFor="let s of suffixes" [value]="s">{{ s }}</option>
           </select>
         </div>
 
         <div class="col-sm-6">
           <label class="form-label fw-semibold">Count</label>
-          <input class="form-control" type="number" [(ngModel)]="count" min="1" max="48" />
+          <input class="form-control" type="number" min="1" max="48"
+            [value]="count$ | async"
+            (change)="setCount(+$any($event.target).value)" />
         </div>
 
       </div>
@@ -43,27 +51,29 @@
     </div>
   </div>
 
-  <div *ngIf="results.length > 0">
-    <h6 class="mb-3 text-muted">{{ results.length }} name{{ results.length !== 1 ? 's' : '' }} generated</h6>
-    <div class="row g-3">
-      <div class="col-sm-6 col-lg-4" *ngFor="let r of results">
-        <div class="card h-100">
-          <div class="card-body">
-            <h5 class="card-title mb-1">{{ r.name }}</h5>
-            <p class="card-text text-muted small mb-2"><em>{{ r.meaning }}</em></p>
-            <div class="d-flex flex-wrap gap-1 mb-2">
-              <span class="badge text-bg-secondary">{{ r.domain }}</span>
-              <span class="badge text-bg-light border text-dark">{{ r.suffix }}</span>
+  <ng-container *ngIf="results$ | async as results">
+    <div *ngIf="results.length > 0">
+      <h6 class="mb-3 text-muted">{{ results.length }} name{{ results.length !== 1 ? 's' : '' }} generated</h6>
+      <div class="row g-3">
+        <div class="col-sm-6 col-lg-4" *ngFor="let r of results">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title mb-1">{{ r.name }}</h5>
+              <p class="card-text text-muted small mb-2"><em>{{ r.meaning }}</em></p>
+              <div class="d-flex flex-wrap gap-1 mb-2">
+                <span class="badge text-bg-secondary">{{ r.domain }}</span>
+                <span class="badge text-bg-light border text-dark">{{ r.suffix }}</span>
+              </div>
+              <p class="small text-muted mb-0 fst-italic">"{{ r.suffixMeaning }}" &middot; {{ r.suffixTradition }}</p>
             </div>
-            <p class="small text-muted mb-0 fst-italic">"{{ r.suffixMeaning }}" &middot; {{ r.suffixTradition }}</p>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div *ngIf="results.length === 0" class="text-center text-muted py-5">
-    <p class="mb-0">Select your options above and click <strong>Generate</strong>.</p>
-  </div>
+    <div *ngIf="results.length === 0" class="text-center text-muted py-5">
+      <p class="mb-0">Select your options above and click <strong>Generate</strong>.</p>
+    </div>
+  </ng-container>
 
 </div>
