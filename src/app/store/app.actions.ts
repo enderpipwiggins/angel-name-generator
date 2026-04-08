@@ -8,3 +8,4 @@ export const setCount       = createAction('[Params] Set Count',        props<{ 
 
 export const generateNames        = createAction('[Names] Generate');
 export const generateNamesSuccess = createAction('[Names] Generate Success', props<{ results: GeneratedAngel[] }>());
+export const generateNamesFailure = createAction('[Names] Generate Failure', props<{ error: unknown }>());

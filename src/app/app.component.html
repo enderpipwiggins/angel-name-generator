@@ -13,7 +13,7 @@
           <label class="form-label fw-semibold">Tradition</label>
           <select class="form-select"
             [value]="tradition$ | async"
-            (change)="setTradition($any($event.target).value)">
+            (change)="onTraditionChange($event)">
             <option *ngFor="let t of traditions" [value]="t">{{ t | titlecase }}</option>
           </select>
         </div>
@@ -22,7 +22,7 @@
           <label class="form-label fw-semibold">Domain</label>
           <select class="form-select"
             [value]="domain$ | async"
-            (change)="setDomain($any($event.target).value)">
+            (change)="onDomainChange($event)">
             <option *ngFor="let d of domains" [value]="d">{{ d | titlecase }}</option>
           </select>
         </div>
@@ -31,8 +31,8 @@
           <label class="form-label fw-semibold">Suffix</label>
           <select class="form-select"
             [value]="suffixFilter$ | async"
-            (change)="setSuffixFilter($any($event.target).value)">
-            <option *ngFor="let s of suffixes" [value]="s">{{ s }}</option>
+            (change)="onSuffixFilterChange($event)">
+            <option *ngFor="let s of suffixes" [value]="s">{{ s | titlecase }}</option>
           </select>
         </div>
 
@@ -40,7 +40,7 @@
           <label class="form-label fw-semibold">Count</label>
           <input class="form-control" type="number" min="1" max="48"
             [value]="count$ | async"
-            (change)="setCount(+$any($event.target).value)" />
+            (change)="onCountChange($event)" />
         </div>
 
       </div>

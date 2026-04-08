@@ -26,9 +26,9 @@ export class AppComponent {
 
   constructor(private store: Store<AppState>) {}
 
-  setTradition(tradition: Tradition)       { this.store.dispatch(setTradition({ tradition })); }
-  setDomain(domain: Domain)                { this.store.dispatch(setDomain({ domain })); }
-  setSuffixFilter(suffixFilter: SuffixFilter) { this.store.dispatch(setSuffixFilter({ suffixFilter })); }
-  setCount(count: number)                  { this.store.dispatch(setCount({ count })); }
-  generate()                               { this.store.dispatch(generateNames()); }
+  onTraditionChange(event: Event)    { this.store.dispatch(setTradition({ tradition: (event.target as HTMLSelectElement).value as Tradition })); }
+  onDomainChange(event: Event)       { this.store.dispatch(setDomain({ domain: (event.target as HTMLSelectElement).value as Domain })); }
+  onSuffixFilterChange(event: Event) { this.store.dispatch(setSuffixFilter({ suffixFilter: (event.target as HTMLSelectElement).value as SuffixFilter })); }
+  onCountChange(event: Event)        { this.store.dispatch(setCount({ count: +(event.target as HTMLInputElement).value })); }
+  generate()                         { this.store.dispatch(generateNames()); }
 }
